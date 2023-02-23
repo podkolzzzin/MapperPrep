@@ -1,0 +1,41 @@
+<#@ output extension=".cs" #>
+<#@ import namespace="System.Collections.Generic" #>
+namespace <#= Namespace #>;
+
+partial class <#=ClassName #>
+{
+    <#foreach (var method in Methods) {#>
+        public <#=method.DestinationType#> <#=method.MethodName#>(<#=method.SourceType#> source)
+        {
+            return new() 
+            {
+                <#foreach (var mapping in method.Mappings) {#>
+                    <#=mapping.From#> = source.<#=mapping.To#>, 
+                <#}#>
+            };
+        }
+    <#}#>
+}
+
+
+<#+
+    public string Namespace { get; set; }
+    public string ClassName { get; set; }
+
+    public IEnumerable<MethodModel> Methods { get; set; }
+    
+    public class MethodModel
+    {
+        public string DestinationType { get; set; }
+        public string MethodName { get; set; }
+        public string SourceType { get; set; }
+        
+        public IEnumerable<Mapping> Mappings { get; set; }
+    }
+    
+    public class Mapping
+    {
+        public string From { get; set; }
+        public string To { get; set; }
+    }
+#>
